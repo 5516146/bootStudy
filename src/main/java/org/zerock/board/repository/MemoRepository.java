@@ -44,8 +44,8 @@ public interface MemoRepository extends JpaRepository<Memo, Long> {
     int updateMemoText(@Param("mno") Long mno, @Param("memoText") String memoText);
 
 //    매개값이 있는 @Query문 :#{}으로 사용 (객체(빈)으로 받음)
-    @Query("UPDATE Memo m SET m.memoText = :#{memoBean.memoText} WHERE m.mno = :#{memoBean.mno}")
-    int updateMemoBean(@Param("memoBean") Memo memo);
+//    @Query("UPDATE Memo m SET m.memoText = :#{memoBean.memoText} WHERE m.mno = :#{memoBean.mno}")
+//    int updateMemoBean(@Param("memoBean") Memo memo);
 
 //    @Query 메소드로 페이징 처리 해보기 -> 리턴타입은 Page<Memo>
     @Query(value = "SELECT m FROM Memo m WHERE m.mno > :mno", countQuery = "SELECT count(m) FROM Memo m WHERE m.mno > :mno")
