@@ -1,5 +1,6 @@
 package org.zerock.board.repository;
 
+import jakarta.persistence.Column;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +9,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.annotation.Commit;
 import org.zerock.board.entity.Memo;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
@@ -28,7 +31,7 @@ public class MemoRepositoryTests {
     }
 
     @Test
-    public void testInsertUmmies() {
+    public void testInsertDummies() {
         // 더미 데이터 추가
         IntStream.rangeClosed(1, 100).forEach(i -> {
             Memo memo = Memo.builder()
@@ -164,4 +167,34 @@ public class MemoRepositoryTests {
         }
     }
 
+    @Test
+    public void testQueryMethods(){
+//        memoRepository에 있는 쿼리메소드를 실행해 리스트로 받음
+        List<Memo> list = memoRepository.findByMnoBetweenOrderByMnoDesc(70l, 80l);
+
+//        받은 리스트 객체를 for문으로 출력
+        for (Memo memo : list){
+            System.out.println(memo);
+        }
+    }
+
+    @Test
+    public void testQueryMethodWithPaging(){
+//        페이지 타입은 of를 사용해 요청을 처리
+//        0번에 10개씩 mno를 기준으로 내림차순 정렬
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("mno").descending());
+
+        Page<Memo> result = memoRepository.findByMnoBetween(10l, 50l, pageable);
+
+        result.get().forEach(memo -> System.out.println(memo));
+    }
+
+//    delete 를 사용할 때는 @Transactional를 사용해야 함
+//    delete 를 처리한 후 자동으로 commit이 되지 않아 @Commit을 사용하야 함
+    @Test
+    @Transactional
+    @Commit
+    public void testQueryMethodDelete(){
+        memoRepository.deleteMemoByMnoLessThan(10l);
+    }
 }
