@@ -1,3 +1,12 @@
+buildscript {
+    ext {
+        queryDslVersion = "5.0.0"
+    }
+} // 자바 웹 개발 워크북 447~
+// 쿼리dsl 버전 관리 (http://www.querydsl.com)
+// 쿼리dsl Qdomain 생성 -> Gradle -> Tasks -> other -> complie.Java
+// 쿼리dsl Qdomain 생성 오류시 Gradle -> Tasks -> build -> Clean -> 셍성
+
 plugins {
     id 'java'
     id 'war'
@@ -38,6 +47,26 @@ dependencies {
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'   // 톰캣
     testImplementation 'org.springframework.boot:spring-boot-starter-test'  // 테스트 환경 구축
     implementation group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-java8time', version: '3.0.4.RELEASE'
+
+    //쿼리dsl 관련 설정 추가
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}:jakarta"
+
+    annotationProcessor(//쿼리dsl 관련 설정 추가
+
+            // 톰켓 9 용 "javax.persistence:javax.persistence-api",
+            // 톰켓 9 용 "javax.annotation:javax.annotation-api",
+            // 톰켓 9 용 "com.querydsl:querydsl-apt:${queryDslVersion}:jpa"
+
+            // 톰켓 10 용
+            "jakarta.persistence:jakarta.persistence-api",
+            "jakarta.annotation:jakarta.annotation-api",
+            "com.querydsl:querydsl-apt:${queryDslVersion}:jakarta"
+    )
+
+//    implementation 'org.modelmapper:modelmapper:3.1.0'
+//    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.1.0'
+//    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
 }
 
 tasks.named('bootBuildImage') {
@@ -47,3 +76,19 @@ tasks.named('bootBuildImage') {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+
+sourceSets {
+    // 톰켓 9용 main.java.srcDir querydslDir
+
+    // 톰켓 10용
+    main {
+        java {
+            srcDirs = ["$projectDir/src/main/java", "$projectDir/build/generated"]
+        }
+    }
+
+}
+
+
+compileJava.dependsOn('clean') // 톰켓 10용
