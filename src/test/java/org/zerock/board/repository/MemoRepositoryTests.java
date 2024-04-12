@@ -1,6 +1,5 @@
 package org.zerock.board.repository;
 
-import jakarta.persistence.Column;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
