@@ -19,6 +19,7 @@ abstract class BaseEntity { // 테이블의 공통 부분을 상속할 클래스
     @CreatedDate // 게시물 생성할 때 동작
     @Column(name = "regDate", updatable = false) // 테이블에 필드명 지정, 업데이트 막음
     private LocalDateTime regDate; // 게시물 등록일
+
     @LastModifiedDate // 게시물 수정될 때 동작
     @Column(name = "modDate") // 테이블에 필드명 지정
     private LocalDateTime modDate; // 게시물 수정일

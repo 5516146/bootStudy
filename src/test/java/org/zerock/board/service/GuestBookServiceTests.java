@@ -7,7 +7,6 @@ import org.zerock.board.dto.GuestBookDTO;
 import org.zerock.board.dto.PageRequestDTO;
 import org.zerock.board.dto.PageResultDTO;
 import org.zerock.board.entity.GuestBook;
-import org.zerock.board.serviece.GuestBookService;
 
 @SpringBootTest
 public class GuestBookServiceTests {

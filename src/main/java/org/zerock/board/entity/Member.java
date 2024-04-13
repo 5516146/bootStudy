@@ -1,5 +1,6 @@
 package org.zerock.board.entity;
 
+import com.sun.jna.platform.win32.ShTypes;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.*;

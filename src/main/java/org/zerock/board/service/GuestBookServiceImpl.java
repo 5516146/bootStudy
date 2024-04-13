@@ -1,4 +1,4 @@
-package org.zerock.board.serviece;
+package org.zerock.board.service;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;

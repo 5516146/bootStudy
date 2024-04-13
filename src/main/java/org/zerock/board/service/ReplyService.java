@@ -1,4 +1,4 @@
-package org.zerock.board.serviece;
+package org.zerock.board.service;
 
 import org.zerock.board.dto.ReplyDTO;
 import org.zerock.board.entity.Board;

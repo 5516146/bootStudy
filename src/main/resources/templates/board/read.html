@@ -40,13 +40,47 @@
       <button type="button" class="btn btn-info">List</button>
     </a>
 
-    <div class="mt-4">
-      <h5>
-        <span class="badge badge-secondary replyCount">Reply Count [[${dto.replyCount}]]</span>
-      </h5>
-    </div>
-    <div class="list-group replyList">
+    <div>
+      <div class="mt-4">
+        <h5>
+          <span class="badge badge-info addReply">Add Reply</span>
+        </h5>
+        <h5>
+          <span class="badge badge-secondary replyCount">Reply Count [[${dto.replyCount}]]</span>
+        </h5>
+      </div>
+      <div class="list-group replyList">
 
+      </div>
+    </div>
+
+    <!-- 댓글 입력 모달 -->
+    <div  class="modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">$times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <input class="form-control" type="text" name="replyText" placeholder="Reply Text ...">
+            </div>
+            <div class="form-group">
+              <input class="form-control" type="text" name="replyer" placeholder="Replyer">
+              <input type="hidden" name="rno">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger replyRemove">Remove</button>
+            <button type="button" class="btn btn-warning replyModify">Modify</button>
+            <button type="button" class="btn btn-primary replySave">Save</button>
+            <button type="button" class="btn btn-outline-secondary replyClose">Close</button>
+          </div>
+        </div>
+      </div>
     </div>
 
   </th:block>
@@ -98,6 +132,110 @@
       })
     }
 
+    // 모달창 제어
+    var modal =  $('.modal'); // 모달 가져오기
+
+    $('.addReply').click(function (){ // addReply 버튼을 클릭하면
+      modal.modal('show'); // 모달창 모이기
+
+      // 댓글 입력 부분 초기화
+      $('input[name="replyText"]').val(''); // 댓글 입력 부분 빈칸
+      $('input[name="replyer"]').val('');   // 댓글 작성자 입력 부분 빈칸
+
+      $(".modal-footer .btn").hide();       // 모달 내의 모든 버튼 안보임
+      $(".replySave, .replyClose").show()   // 저장, 닫기 버튼만 보임
+    })
+
+    // 댓글 저장
+    $(".replySave").click(function (){ // 저장 버튼을 누르면
+
+      var reply = { // bno, 댓글 내용, 작성자를 reply에 저장
+        bno : bno,
+        text : $('input[name="replyText"]').val(),
+        replyer : $('input[name="replyer"]').val()
+      }
+
+      console.log(reply);
+
+      $.ajax({
+        url : '/replies/',            // 경로
+        method : 'post',              // 메소드
+        data : JSON.stringify(reply), // JSON 문자열로 변환
+        contentType : 'application/json; charset=utf-8',
+        dataType : 'json',
+        success : function (data) { // 작업이 성공하면
+          console.log(data);
+
+          var newRno = parseInt(data);
+
+          alert(newRno + " 번 댓글이 등록되었습니다.") // alert창 띄우기
+          modal.modal('hide'); // 모달창 숨기기
+          loadJSONData(); // 화면 갱신
+        }
+      })
+    });
+
+    // 모달창에 댓글의 정보 출력
+    $('.replyList').on("click", ".card-body", function (){
+      var rno = $(this).data("rno");
+
+      $("input[name='replyText']").val($(this).find('.card-title').html());
+      $("input[name='replyer']").val($(this).find('.card-subtitle').html());
+      $("input[name='rno']").val(rno);
+
+      $(".modal-footer .btn").hide(); // 모달 푸터의 버튼을 숨김처리
+      $(".replyRemove, .replyModify, .replyClose").show(); // 삭제, 수정, 닫기 버튼만 보임
+
+      modal.modal('show'); // 모달 보이기
+    });
+
+    // 댓글 삭제
+    $(".replyRemove").on("click", function (){
+      var rno = $("input[name='rno']").val(); // 모달창에 보이는 댓글 번호 (hidden 처리 되어있음)
+
+      $.ajax({
+        url : '/replies/' + rno,
+        method: 'delete',
+        success: function (result){
+          console.log("result : " + result);
+
+          if (result === 'success'){
+            alert("댓글이 삭제되었습니다.");
+            modal.modal('hide');
+            loadJSONData();
+          }
+        }
+      })
+    });
+
+    // 댓글 수정
+    $(".replyModify").click(function (){
+      var rno = $("input[name='rno']").val();
+      var reply = {
+        rno : rno,
+        bno : bno,
+        text : $('input[name="replyText"]').val(),
+        replyer : $('input[name="replyer"]').val()
+      }
+
+      console.log(reply);
+
+      $.ajax({
+        url : '/replies/' + rno,
+        method : 'put',
+        data : JSON.stringify(reply),
+        contentType: 'application/json; charset=utf-8',
+        success : function (result){
+          console.log("RESULT : " + result);
+
+          if (result === 'success'){
+            alert("댓글이 수정되었습니다.");
+            modal.modal('hide');
+            loadJSONData();
+          }
+        }
+      })
+    })
 
   });
 </script>

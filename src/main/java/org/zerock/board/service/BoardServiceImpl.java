@@ -1,4 +1,4 @@
-package org.zerock.board.serviece;
+package org.zerock.board.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
